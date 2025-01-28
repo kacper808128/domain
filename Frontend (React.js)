@@ -1,0 +1,41 @@
+import React, { useState } from 'react';
+import './App.css';
+
+function App() {
+  const [email, setEmail] = useState('');
+  const [result, setResult] = useState(null);
+
+  const checkEmail = async () => {
+    // Call backend API to validate email
+    const response = await fetch(`/api/check-email?email=${email}`);
+    const data = await response.json();
+    setResult(data);
+  };
+
+  return (
+    <div className="App">
+      <header className="header">
+        <h1>Email Checker Pro 📧✨</h1>
+      </header>
+      <div className="input-section">
+        <input
+          type="text"
+          placeholder="Enter an email address..."
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <button onClick={checkEmail}>Check Deliverability 🚀</button>
+      </div>
+      {result && (
+        <div className="result-section">
+          <h2>{result.valid ? '✅ Valid Email!' : '❌ Invalid Email!'}</h2>
+          <p>Deliverability Score: {result.score}/100 {result.score > 80 ? '🎉' : '⚠️'}</p>
+          <p>Domain: {result.domainStatus}</p>
+          <p>Disposable: {result.isDisposable ? 'Yes ⚠️' : 'No ✅'}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default App;
